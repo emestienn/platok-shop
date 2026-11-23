@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import connectDB from '../config/db.js';
 import Product from '../models/Product.js';
+import User from '../models/User.js';
 
 dotenv.config();
 
@@ -242,6 +243,25 @@ const newProducts = [
   },
 ].map((p) => ({ ...p, wholesaleTiers: tiers(p.retailPrice) }));
 
+
+// Product photos (shop-style). Applied on every run so they stay in sync.
+const productImages = {
+  'modal-hijab-classic': ['1545266241-3516e2a6e016', '1550546094-9835463f9f71'],
+  'chiffon-hijab-sapphire': ['1627359212239-3d82a215af75', '1676696706907-0e04665b80bd'],
+  'jersey-hijab-comfort': ['1613611927458-3ddd4b0afdb9', '1613909707776-098e961198dc'],
+  'hijab-lavender': ['1626497361649-81cc097e9bfd', '1617055407123-3d7130c1f940'],
+  'paisley-print-hijab': ['1640154852340-9de73a0643a8'],
+  'ornament-scarf-samarkand': ['1623832101624-ecd47c803527'],
+  'silk-scarf-violetta': ['1551028442-ee84b4d3a50a'],
+  'silk-scarf-pearl': ['1619043518800-7f14be467dca', '1606259457945-67dc66271ee6'],
+  'scarf-sunflower': ['1620763050148-af058ab2fff0', '1613447895817-e617a4093f50'],
+  'floral-shawl-bahor': ['1609803364911-9e275e5a2b44'],
+  'warm-shawl-winter-garden': ['1789845137167-5a6fed517e65', '1527167598984-8802d8028eea'],
+  'neck-scarf-olive': ['1527167598984-8802d8028eea'],
+  'scarf-set-rainbow': ['1776127839720-c0ab710d9d37', '1545153252-0e2e698f0330'],
+  'scarf-mist': ['1558027309-0844844295f7', '1594734415578-00fc9540929b'],
+};
+
 const run = async () => {
   await connectDB();
 
@@ -263,6 +283,20 @@ const run = async () => {
       { $set: { 'name.en': en.name, 'description.en': en.description } }
     );
     translated += res.modifiedCount;
+  }
+
+  let photos = 0;
+  for (const [slug, ids] of Object.entries(productImages)) {
+    const res = await Product.updateOne({ slug }, { $set: { images: ids.map(img) } });
+    photos += res.modifiedCount;
+  }
+  console.log(`🖼  Updated photos on ${photos} products`);
+
+  // Give admin rights to the account in ADMIN_EMAIL (set in Render env vars)
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  if (adminEmail) {
+    const res = await User.updateOne({ email: adminEmail }, { $set: { role: 'admin' } });
+    console.log(res.matchedCount ? `👑 ${adminEmail} is now an admin` : `⚠️  No user found with email ${adminEmail}`);
   }
 
   console.log(`✨ Products: ${added} added, ${translated} existing translated to English`);
