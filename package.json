@@ -10,7 +10,7 @@
     "seed": "cd server && npm run seed",
     "build": "cd client && npm install --include=dev && npm run build",
     "start": "cd server && npm install && node server.js",
-    "render-build": "npm run build && cd server && npm install && node utils/addProducts.js",
+    "render-build": "rm -rf node_modules client/node_modules server/node_modules && npm run build && cd server && npm install && node utils/addProducts.js",
     "add-products": "cd server && node utils/addProducts.js"
   },
   "devDependencies": {
