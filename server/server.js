@@ -24,6 +24,8 @@ dotenv.config();
 connectDB().then(() => initBot());
 
 const app = express();
+// Behind Render's proxy: use the real client IP for rate limiting
+app.set('trust proxy', 1);
 
 app.use(helmet({
   contentSecurityPolicy: {
