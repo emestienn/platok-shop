@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { cartItemName } from '../utils/localize.js';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, ChevronRight, Send, MapPin, Loader2, Navigation } from 'lucide-react';
 import useCartStore from '../store/cartStore.js';
 import useAuthStore from '../store/authStore.js';
-import useLanguageStore from '../store/languageStore.js';
+import useLanguageStore, { L } from '../store/languageStore.js';
 import { ordersApi, configApi } from '../api/index.js';
 import { PLACEHOLDER_IMAGE, handleImageError } from '../utils/image.js';
 
@@ -13,16 +14,16 @@ const formatPrice = (n) => new Intl.NumberFormat('uz-UZ').format(n);
 const STEPS = ['delivery', 'payment', 'confirm'];
 
 const PICKUP_LOCATIONS = [
-  { value: 'chorsu',    label: 'Чорсу / Фунча' },
-  { value: 'yunusabad', label: 'Юнусабад' },
-  { value: 'abu_sahiy', label: 'Абу Сахий' },
+  { value: 'chorsu',    get label() { return L('Чорсу / Фунча', "Cho'rsu / G'uncha", 'Chorsu / Guncha'); } },
+  { value: 'yunusabad', get label() { return L('Юнусабад', 'Yunusobod', 'Yunusabad'); } },
+  { value: 'abu_sahiy', get label() { return L('Абу Сахий', 'Abu Sahiy', 'Abu Sahiy'); } },
 ];
 
 const PAYMENT_METHODS = [
-  { value: 'click',            label: 'Click', icon: '💳', desc: 'Онлайн оплата через Click' },
-  { value: 'payme',            label: 'Payme', icon: '💳', desc: 'Онлайн оплата через Payme' },
-  { value: 'cash_on_delivery', label: 'Наличные',  icon: '💵', desc: 'Оплата при получении' },
-  { value: 'card_on_delivery', label: 'Карта',     icon: '💳', desc: 'Карта при получении' },
+  { value: 'click',            label: 'Click', icon: '💳', get desc() { return L('Онлайн оплата через Click', "Click orqali onlayn to'lov", 'Pay online with Click'); } },
+  { value: 'payme',            label: 'Payme', icon: '💳', get desc() { return L('Онлайн оплата через Payme', "Payme orqali onlayn to'lov", 'Pay online with Payme'); } },
+  { value: 'cash_on_delivery', get label() { return L('Наличные', 'Naqd pul', 'Cash'); }, icon: '💵', get desc() { return L('Оплата при получении', "Qabul qilishda to'lov", 'Pay on delivery'); } },
+  { value: 'card_on_delivery', get label() { return L('Карта', 'Karta', 'Card'); }, icon: '💳', get desc() { return L('Карта при получении', 'Qabul qilishda karta orqali', 'Card on delivery'); } },
 ];
 
 export default function Checkout() {
@@ -133,7 +134,7 @@ export default function Checkout() {
       setPlacedOrder(data.order);
       clearCart();
     } catch (err) {
-      setError(err.response?.data?.message || 'Ошибка оформления заказа');
+      setError(err.response?.data?.message || L('Ошибка оформления заказа', 'Buyurtma berishda xatolik', 'Could not place the order'));
     } finally {
       setSubmitting(false);
     }
@@ -155,7 +156,7 @@ export default function Checkout() {
             {t('checkout.order_success_msg').replace('{number}', placedOrder.orderNumber)}
           </p>
           <p className="text-sm text-charcoal-400 mb-8">
-            Заказ <strong className="text-charcoal-700">{placedOrder.orderNumber}</strong>
+            {L('Заказ', 'Buyurtma', 'Order')} <strong className="text-charcoal-700">{placedOrder.orderNumber}</strong>
           </p>
           <div className="space-y-3">
             {/* Telegram notification CTA — shown when bot username is available */}
@@ -172,11 +173,11 @@ export default function Checkout() {
             )}
             {user && (
               <Link to="/orders" className="btn-primary w-full block text-center">
-                Мои заказы
+                {t('nav.my_orders')}
               </Link>
             )}
             <Link to="/products" className="btn-outline w-full block text-center">
-              Продолжить покупки
+              {L('Продолжить покупки', 'Xaridni davom ettirish', 'Continue shopping')}
             </Link>
           </div>
         </motion.div>
@@ -248,7 +249,7 @@ export default function Checkout() {
                       >
                         <p className="font-medium text-charcoal-800 text-sm">{t(`checkout.${m}`)}</p>
                         <p className="text-xs text-charcoal-400 mt-0.5">
-                          {m === 'delivery' ? 'Курьер до двери' : 'Бесплатно'}
+                          {m === 'delivery' ? L('Курьер до двери', 'Eshikkacha kuryer', 'Courier to your door') : L('Бесплатно', 'Bepul', 'Free')}
                         </p>
                       </button>
                     ))}
@@ -279,7 +280,7 @@ export default function Checkout() {
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
                           <Label>{t('checkout.full_name')} *</Label>
-                          <input value={form.fullName} onChange={(e) => update('fullName', e.target.value)} className="input-field" placeholder="Имя Фамилия" required />
+                          <input value={form.fullName} onChange={(e) => update('fullName', e.target.value)} className="input-field" placeholder={L('Имя Фамилия', 'Ism Familiya', 'First and last name')} required />
                         </div>
                         <div>
                           <Label>{t('checkout.phone')} *</Label>
@@ -288,23 +289,23 @@ export default function Checkout() {
                       </div>
                       <div>
                         <Label>{t('checkout.district')} *</Label>
-                        <input value={form.district} onChange={(e) => update('district', e.target.value)} className="input-field" placeholder="Юнусабадский, Мирзо-Улугбекский..." required />
+                        <input value={form.district} onChange={(e) => update('district', e.target.value)} className="input-field" placeholder={L('Юнусабадский, Мирзо-Улугбекский...', "Yunusobod, Mirzo Ulug'bek...", 'Yunusabad, Mirzo Ulugbek...')} required />
                       </div>
                       <div>
                         <Label>{t('checkout.street')} *</Label>
-                        <input value={form.street} onChange={(e) => update('street', e.target.value)} className="input-field" placeholder="Улица, дом" required />
+                        <input value={form.street} onChange={(e) => update('street', e.target.value)} className="input-field" placeholder={L('Улица, дом', "Ko'cha, uy", 'Street, building')} required />
                       </div>
                       <div>
                         <Label>{t('checkout.apartment')}</Label>
-                        <input value={form.apartment} onChange={(e) => update('apartment', e.target.value)} className="input-field" placeholder="Кв. / Офис (необязательно)" />
+                        <input value={form.apartment} onChange={(e) => update('apartment', e.target.value)} className="input-field" placeholder={L('Кв. / Офис (необязательно)', 'Xonadon / Ofis (ixtiyoriy)', 'Apt. / Office (optional)')} />
                       </div>
                       <div>
                         <Label>{t('checkout.notes')}</Label>
-                        <textarea value={form.notes} onChange={(e) => update('notes', e.target.value)} className="input-field resize-none" rows={3} placeholder="Ориентир, время доставки и др." />
+                        <textarea value={form.notes} onChange={(e) => update('notes', e.target.value)} className="input-field resize-none" rows={3} placeholder={L('Ориентир, время доставки и др.', "Mo'ljal, yetkazish vaqti va h.k.", 'Landmark, preferred delivery time, etc.')} />
                       </div>
                       {!user && (
                         <div>
-                          <Label>Email (для подтверждения)</Label>
+                          <Label>{L('Email (для подтверждения)', 'Email (tasdiqlash uchun)', 'Email (for confirmation)')}</Label>
                           <input value={form.guestEmail} onChange={(e) => update('guestEmail', e.target.value)} type="email" className="input-field" placeholder="your@email.com" />
                         </div>
                       )}
@@ -402,9 +403,9 @@ export default function Checkout() {
                     ))}
                   </div>
                   <div className="flex gap-3">
-                    <button onClick={() => setStep(0)} className="btn-outline flex-1">Назад</button>
+                    <button onClick={() => setStep(0)} className="btn-outline flex-1">{t('common.back')}</button>
                     <button onClick={() => setStep(2)} className="btn-primary flex-1 flex items-center justify-center gap-2">
-                      Подтвердить <ChevronRight size={18} />
+                      {L('Подтвердить', 'Tasdiqlash', 'Confirm')} <ChevronRight size={18} />
                     </button>
                   </div>
                 </motion.div>
@@ -418,10 +419,10 @@ export default function Checkout() {
                   <div className="space-y-3 mb-6">
                     <div className="bg-pink-50/50 rounded-2xl p-4 text-sm">
                       <p className="font-medium text-charcoal-700 mb-1">
-                        {form.deliveryMethod === 'pickup' ? `Самовывоз: ${PICKUP_LOCATIONS.find(l=>l.value===form.pickupLocation)?.label}` : 'Доставка курьером'}
+                        {form.deliveryMethod === 'pickup' ? `${t('checkout.pickup')}: ${PICKUP_LOCATIONS.find(l=>l.value===form.pickupLocation)?.label}` : t('checkout.delivery')}
                       </p>
                       {form.deliveryMethod === 'delivery' && (
-                        <p className="text-charcoal-500">{form.district}, {form.street}{form.apartment ? `, кв. ${form.apartment}` : ''}</p>
+                        <p className="text-charcoal-500">{form.district}, {form.street}{form.apartment ? `, ${L('кв.', 'xon.', 'apt.')} ${form.apartment}` : ''}</p>
                       )}
                       <p className="text-charcoal-500">{form.fullName} · {form.phone}</p>
                       {form.deliveryMethod === 'delivery' && (
@@ -445,13 +446,13 @@ export default function Checkout() {
                   )}
 
                   <div className="flex gap-3">
-                    <button onClick={() => setStep(1)} className="btn-outline flex-1">Назад</button>
+                    <button onClick={() => setStep(1)} className="btn-outline flex-1">{t('common.back')}</button>
                     <button
                       onClick={handleSubmit}
                       disabled={submitting}
                       className="btn-primary flex-1"
                     >
-                      {submitting ? 'Оформляем...' : t('checkout.place_order')}
+                      {submitting ? L('Оформляем...', 'Rasmiylashtirilmoqda...', 'Placing order...') : t('checkout.place_order')}
                     </button>
                   </div>
                 </motion.div>
@@ -462,14 +463,14 @@ export default function Checkout() {
           {/* Order summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-3xl shadow-luxury p-6 sticky top-28">
-              <h3 className="font-serif text-lg text-charcoal-800 mb-5">Ваш заказ</h3>
+              <h3 className="font-serif text-lg text-charcoal-800 mb-5">{L('Ваш заказ', 'Buyurtmangiz', 'Your order')}</h3>
               <ul className="space-y-3 mb-5">
                 {items.map((item) => (
                   <li key={item.key} className="flex gap-3">
-                    <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} className="w-14 h-14 object-cover rounded-xl flex-shrink-0" onError={handleImageError} />
+                    <img src={item.image || PLACEHOLDER_IMAGE} alt={cartItemName(item)} className="w-14 h-14 object-cover rounded-xl flex-shrink-0" onError={handleImageError} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-charcoal-700 line-clamp-2">{item.name}</p>
-                      <p className="text-xs text-charcoal-400">{item.quantity} шт.</p>
+                      <p className="text-sm font-medium text-charcoal-700 line-clamp-2">{cartItemName(item)}</p>
+                      <p className="text-xs text-charcoal-400">{item.quantity} {t('common.pieces')}</p>
                       <p className="text-pink-500 font-medium text-sm">{formatPrice(item.unitPrice * item.quantity)} UZS</p>
                     </div>
                   </li>

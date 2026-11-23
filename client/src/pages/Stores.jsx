@@ -1,19 +1,23 @@
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
-import useLanguageStore from '../store/languageStore.js';
+import useLanguageStore, { L } from '../store/languageStore.js';
 
 const stores = [
   {
     key: 'chorsu',
     image: '/images/store.png',
     nameRu: 'Чорсу / Фунча',
+    nameEn: 'Chorsu / Guncha',
     nameUz: "Cho\'rsu / G'uncha",
     labelRu: 'Рынок Чорсу',
+    labelEn: 'Chorsu Bazaar',
     labelUz: 'Cho\'rsu bozori',
     addressRu: 'Рынок Чорсу, Фунча павильон, Ташкент',
+    addressEn: 'Chorsu Bazaar, Guncha pavilion, Tashkent',
     addressUz: 'Cho\'rsu bozori, Funcha pavilon, Toshkent',
     phone: '+998 90 XXX XX XX',
     hoursRu: 'Пн–Сб: 09:00–19:00',
+    hoursEn: 'Mon–Sat: 09:00–19:00',
     hoursUz: 'Du–Sha: 09:00–19:00',
     mapsUrl: 'https://maps.google.com/?q=Chorsu+Bazaar+Tashkent',
     yandexUrl: 'https://yandex.uz/maps/?text=Chorsu+Bazaar+Tashkent',
@@ -23,13 +27,17 @@ const stores = [
     key: 'yunusabad',
     image: '/images/store.png',
     nameRu: 'Юнусабад',
+    nameEn: 'Yunusabad',
     nameUz: 'Yunusobod',
     labelRu: 'ТЦ Юнусабад',
+    labelEn: 'Yunusabad Shopping Center',
     labelUz: 'Yunusobod savdo markazi',
     addressRu: 'Юнусабадский район, ТЦ, Ташкент',
+    addressEn: 'Yunusabad district, shopping center, Tashkent',
     addressUz: 'Yunusobod tumani, savdo markazi, Toshkent',
     phone: '+998 90 XXX XX XX',
     hoursRu: 'Пн–Сб: 09:00–19:00',
+    hoursEn: 'Mon–Sat: 09:00–19:00',
     hoursUz: 'Du–Sha: 09:00–19:00',
     mapsUrl: 'https://maps.google.com/?q=Yunusabad+Tashkent',
     yandexUrl: 'https://yandex.uz/maps/?text=Yunusabad+Tashkent',
@@ -39,13 +47,17 @@ const stores = [
     key: 'abu_sahiy',
     image: '/images/store.png',
     nameRu: 'Абу Сахий',
+    nameEn: 'Abu Sahiy',
     nameUz: 'Abu Sahiy',
     labelRu: 'Рынок Абу Сахий',
+    labelEn: 'Abu Sahiy Market',
     labelUz: 'Abu Sahiy bozori',
     addressRu: 'Рынок Абу Сахий, Ташкент',
+    addressEn: 'Abu Sahiy Market, Tashkent',
     addressUz: 'Abu Sahiy bozori, Toshkent',
     phone: '+998 90 XXX XX XX',
     hoursRu: 'Пн–Сб: 09:00–18:00',
+    hoursEn: 'Mon–Sat: 09:00–18:00',
     hoursUz: 'Du–Sha: 09:00–18:00',
     mapsUrl: 'https://maps.google.com/?q=Abu+Sahiy+Bazaar+Tashkent',
     yandexUrl: 'https://yandex.uz/maps/?text=Abu+Sahiy+Tashkent',
@@ -62,7 +74,7 @@ export default function Stores() {
       <div className="bg-luxury-gradient border-b border-pink-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <span className="badge-luxury bg-pink-50 text-pink-500 border border-pink-200 mb-4">
-            <MapPin size={14} /> Ташкент
+            <MapPin size={14} /> {L('Ташкент', 'Toshkent', 'Tashkent')}
           </span>
           <h1 className="font-serif text-4xl md:text-5xl text-charcoal-800 mt-4">
             {t('stores.title')}
@@ -89,7 +101,7 @@ export default function Stores() {
                 <div className={`relative md:w-64 flex-shrink-0 min-h-48 md:min-h-0 overflow-hidden bg-gradient-to-br ${store.fallback}`}>
                   <img
                     src={store.image}
-                    alt={lang === 'uz' ? store.nameUz : store.nameRu}
+                    alt={L(store.nameRu, store.nameUz, store.nameEn)}
                     className="absolute inset-0 w-full h-full object-cover"
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
@@ -98,10 +110,10 @@ export default function Stores() {
                   {/* Name */}
                   <div className="relative z-10 h-full flex flex-col justify-end p-5 min-h-48">
                     <p className="text-[11px] text-white/60 font-medium uppercase tracking-widest mb-1">
-                      {lang === 'uz' ? store.labelUz : store.labelRu}
+                      {L(store.labelRu, store.labelUz, store.labelEn)}
                     </p>
                     <h2 className="font-serif text-xl text-white leading-snug drop-shadow">
-                      {lang === 'uz' ? store.nameUz : store.nameRu}
+                      {L(store.nameRu, store.nameUz, store.nameEn)}
                     </h2>
                   </div>
                 </div>
@@ -114,9 +126,9 @@ export default function Stores() {
                         <MapPin size={16} className="text-pink-400" />
                       </div>
                       <div>
-                        <p className="text-xs text-charcoal-400 font-medium mb-1 uppercase tracking-wide">Адрес</p>
+                        <p className="text-xs text-charcoal-400 font-medium mb-1 uppercase tracking-wide">{L('Адрес', 'Manzil', 'Address')}</p>
                         <p className="text-charcoal-700 text-sm leading-relaxed">
-                          {lang === 'uz' ? store.addressUz : store.addressRu}
+                          {L(store.addressRu, store.addressUz, store.addressEn)}
                         </p>
                       </div>
                     </div>
@@ -126,7 +138,7 @@ export default function Stores() {
                         <Phone size={16} className="text-pink-400" />
                       </div>
                       <div>
-                        <p className="text-xs text-charcoal-400 font-medium mb-1 uppercase tracking-wide">Телефон</p>
+                        <p className="text-xs text-charcoal-400 font-medium mb-1 uppercase tracking-wide">{L('Телефон', 'Telefon', 'Phone')}</p>
                         <a href={`tel:${store.phone}`} className="text-charcoal-700 text-sm hover:text-pink-500 transition-colors">
                           {store.phone}
                         </a>
@@ -140,7 +152,7 @@ export default function Stores() {
                       <div>
                         <p className="text-xs text-charcoal-400 font-medium mb-1 uppercase tracking-wide">{t('stores.hours')}</p>
                         <p className="text-charcoal-700 text-sm">
-                          {lang === 'uz' ? store.hoursUz : store.hoursRu}
+                          {L(store.hoursRu, store.hoursUz, store.hoursEn)}
                         </p>
                       </div>
                     </div>
@@ -155,7 +167,7 @@ export default function Stores() {
                       className="flex items-center gap-2 px-4 py-2.5 bg-[#FC3F1D]/10 text-[#FC3F1D] hover:bg-[#FC3F1D]/20 rounded-xl text-sm font-medium transition-colors"
                     >
                       <Navigation size={15} />
-                      Яндекс Карты
+                      {L('Яндекс Карты', 'Yandex Xaritalar', 'Yandex Maps')}
                     </a>
                     <a
                       href={store.mapsUrl}
@@ -180,14 +192,14 @@ export default function Stores() {
           viewport={{ once: true }}
           className="mt-12 text-center bg-luxury-gradient rounded-3xl p-10 border border-pink-100"
         >
-          <h3 className="font-serif text-2xl text-charcoal-800 mb-2">Хотите заказать доставку?</h3>
-          <p className="text-charcoal-400 mb-6">Доставляем по всему Ташкенту. Бесплатно при заказе от 500 000 UZS.</p>
+          <h3 className="font-serif text-2xl text-charcoal-800 mb-2">{L('Хотите заказать доставку?', 'Yetkazib berishga buyurtma bermoqchimisiz?', 'Want home delivery?')}</h3>
+          <p className="text-charcoal-400 mb-6">{L('Доставляем по всему Ташкенту. Бесплатно при заказе от 500 000 UZS.', "Butun Toshkent bo'ylab yetkazib beramiz. 500 000 UZS dan ortiq buyurtmalarga bepul.", 'We deliver across Tashkent. Free on orders over 500,000 UZS.')}</p>
           <div className="flex flex-wrap gap-3 justify-center">
             <a href="https://t.me/luxury_platok" target="_blank" rel="noopener noreferrer" className="btn-primary">
-              Написать в Telegram
+              {L('Написать в Telegram', 'Telegramga yozish', 'Message us on Telegram')}
             </a>
             <a href="/products" className="btn-outline">
-              Смотреть каталог
+              {t('home.cta_btn')}
             </a>
           </div>
         </motion.div>

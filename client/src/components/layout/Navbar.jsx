@@ -9,12 +9,20 @@ import useLanguageStore from '../../store/languageStore.js';
 const LanguageToggle = () => {
   const { lang, setLang } = useLanguageStore();
   return (
-    <button
-      onClick={() => setLang(lang === 'ru' ? 'uz' : 'ru')}
-      className="text-xs font-semibold px-3 py-1.5 rounded-full border border-charcoal-200 hover:border-pink-400 hover:text-pink-500 transition-all duration-200 tracking-wide"
-    >
-      {lang === 'ru' ? 'UZ' : 'RU'}
-    </button>
+    <div className="flex items-center rounded-full border border-charcoal-200 p-0.5 text-[11px] font-semibold tracking-wide">
+      {['ru', 'uz', 'en'].map((code) => (
+        <button
+          key={code}
+          onClick={() => setLang(code)}
+          aria-pressed={lang === code}
+          className={`px-2 py-1 rounded-full transition-all duration-200 ${
+            lang === code ? 'bg-pink-500 text-white' : 'text-charcoal-500 hover:text-pink-500'
+          }`}
+        >
+          {code.toUpperCase()}
+        </button>
+      ))}
+    </div>
   );
 };
 

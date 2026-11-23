@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ProductCard from '../product/ProductCard.jsx';
 import QuickViewModal from '../product/QuickViewModal.jsx';
-import useLanguageStore from '../../store/languageStore.js';
+import useLanguageStore, { L } from '../../store/languageStore.js';
 import { productsApi } from '../../api/index.js';
 
 const SkeletonCard = () => (
@@ -66,7 +66,7 @@ export default function BestSellers({ variant = 'bestSeller' }) {
           </div>
         ) : (
           <div className="text-center py-16">
-            <p className="text-charcoal-400">Скоро здесь появятся товары ✨</p>
+            <p className="text-charcoal-400">{L('Скоро здесь появятся товары ✨', "Tez orada mahsulotlar paydo bo'ladi ✨", 'Products coming soon ✨')}</p>
           </div>
         )}
 

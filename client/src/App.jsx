@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react';
+import { L } from './store/languageStore.js';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar.jsx';
 import Footer from './components/layout/Footer.jsx';
@@ -87,8 +88,8 @@ export default function App() {
             <Layout>
               <div className="min-h-screen flex items-center justify-center flex-col gap-4 bg-luxury-gradient">
                 <p className="text-7xl font-serif font-bold text-gradient-gold">404</p>
-                <h2 className="font-serif text-2xl text-charcoal-700">Страница не найдена</h2>
-                <a href="/" className="btn-primary mt-2">На главную</a>
+                <h2 className="font-serif text-2xl text-charcoal-700">{L('Страница не найдена', 'Sahifa topilmadi', 'Page not found')}</h2>
+                <a href="/" className="btn-primary mt-2">{L('На главную', 'Bosh sahifaga', 'Back to home')}</a>
               </div>
             </Layout>
           } />

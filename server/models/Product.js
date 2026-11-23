@@ -31,10 +31,12 @@ const productSchema = new mongoose.Schema(
     name: {
       ru: { type: String, required: true, trim: true },
       uz: { type: String, trim: true },
+      en: { type: String, trim: true },
     },
     description: {
       ru: { type: String, required: true },
       uz: { type: String },
+      en: { type: String },
     },
     slug: {
       type: String,

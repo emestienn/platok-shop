@@ -39,6 +39,7 @@ export const getProducts = asyncHandler(async (req, res) => {
     filter.$or = [
       { 'name.ru': re },
       { 'name.uz': re },
+      { 'name.en': re },
       { 'description.ru': re },
       { 'description.uz': re },
       { material: re },

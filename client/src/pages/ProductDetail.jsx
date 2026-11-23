@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { localText } from '../utils/localize.js';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Minus, Plus, ChevronRight, Star } from 'lucide-react';
@@ -6,7 +7,7 @@ import ProductImageGallery from '../components/product/ProductImageGallery.jsx';
 import ProductCard from '../components/product/ProductCard.jsx';
 import useCartStore from '../store/cartStore.js';
 import useAuthStore from '../store/authStore.js';
-import useLanguageStore from '../store/languageStore.js';
+import useLanguageStore, { L } from '../store/languageStore.js';
 import { productsApi } from '../api/index.js';
 
 const formatPrice = (n) => new Intl.NumberFormat('uz-UZ').format(n);
@@ -95,14 +96,14 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4">
         <p className="text-5xl">😔</p>
-        <h2 className="font-serif text-2xl text-charcoal-700">Товар не найден</h2>
-        <Link to="/products" className="btn-primary">Вернуться в каталог</Link>
+        <h2 className="font-serif text-2xl text-charcoal-700">{L('Товар не найден', 'Mahsulot topilmadi', 'Product not found')}</h2>
+        <Link to="/products" className="btn-primary">{L('Вернуться в каталог', 'Katalogga qaytish', 'Back to catalog')}</Link>
       </div>
     );
   }
 
-  const name = product.name?.[lang] || product.name?.ru;
-  const description = product.description?.[lang] || product.description?.ru;
+  const name = localText(product.name, lang);
+  const description = localText(product.description, lang);
   const galleryImages = selectedColor?.images?.length ? selectedColor.images : product.images;
   const wholesalePrice = isWholesale?.() ? getWholesalePrice(quantity) : null;
 
@@ -119,7 +120,7 @@ export default function ProductDetail() {
       <div className="bg-luxury-gradient border-b border-pink-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center gap-2 text-sm text-charcoal-400">
-            <Link to="/" className="hover:text-pink-500 transition-colors">Главная</Link>
+            <Link to="/" className="hover:text-pink-500 transition-colors">{t('nav.home')}</Link>
             <ChevronRight size={14} />
             <Link to="/products" className="hover:text-pink-500 transition-colors">{t('nav.catalog')}</Link>
             <ChevronRight size={14} />
@@ -167,7 +168,7 @@ export default function ProductDetail() {
                     <Star key={i} size={16} fill={i < Math.round(product.rating) ? '#C9A96E' : 'none'} stroke={i < Math.round(product.rating) ? '#C9A96E' : '#D1D1D1'} />
                   ))}
                 </div>
-                <span className="text-sm text-charcoal-400">{product.rating.toFixed(1)} ({product.numReviews} отзывов)</span>
+                <span className="text-sm text-charcoal-400">{product.rating.toFixed(1)} ({product.numReviews} {L('отзывов', 'sharh', 'reviews')})</span>
               </div>
             )}
 
@@ -183,26 +184,26 @@ export default function ProductDetail() {
 
               {wholesalePrice && (
                 <div className="mt-3 pt-3 border-t border-pink-100">
-                  <p className="text-xs text-charcoal-400 mb-1">Ваша оптовая цена:</p>
-                  <p className="text-gold-500 font-bold text-xl">{formatPrice(wholesalePrice)} UZS/шт.</p>
+                  <p className="text-xs text-charcoal-400 mb-1">{L('Ваша оптовая цена:', 'Sizning ulgurji narxingiz:', 'Your wholesale price:')}</p>
+                  <p className="text-gold-500 font-bold text-xl">{formatPrice(wholesalePrice)} UZS/{t('common.pieces')}</p>
                   <p className="text-xs text-charcoal-400 mt-0.5">
-                    Экономия: {formatPrice(product.retailPrice - wholesalePrice)} UZS/шт.
+                    {L('Экономия', 'Tejash', 'You save')}: {formatPrice(product.retailPrice - wholesalePrice)} UZS/{t('common.pieces')}
                   </p>
                 </div>
               )}
 
               {!isWholesale?.() && product.wholesaleTiers?.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-pink-100">
-                  <p className="text-xs text-charcoal-400 mb-2">Оптовые цены:</p>
+                  <p className="text-xs text-charcoal-400 mb-2">{L('Оптовые цены:', 'Ulgurji narxlar:', 'Wholesale prices:')}</p>
                   <div className="flex flex-wrap gap-2">
                     {product.wholesaleTiers.map((tier) => (
                       <span key={tier.minQuantity} className="text-xs bg-white border border-gold-200 text-gold-600 rounded-full px-3 py-1">
-                        от {tier.minQuantity} шт. → {formatPrice(tier.pricePerUnit)} UZS
+                        {t('common.from')} {tier.minQuantity} {t('common.pieces')} → {formatPrice(tier.pricePerUnit)} UZS
                       </span>
                     ))}
                   </div>
                   <Link to="/register" className="text-xs text-pink-400 hover:underline mt-2 block">
-                    Стать оптовым клиентом →
+                    {t('footer.become_wholesale')} →
                   </Link>
                 </div>
               )}
@@ -231,7 +232,7 @@ export default function ProductDetail() {
                 </div>
                 {selectedColor && (
                   <p className="text-xs text-charcoal-400 mt-2">
-                    {t('product.in_stock')}: {selectedColor.stock} шт.
+                    {t('product.in_stock')}: {selectedColor.stock} {t('common.pieces')}
                   </p>
                 )}
               </div>
@@ -257,7 +258,7 @@ export default function ProductDetail() {
                   </button>
                 </div>
                 <span className="text-xs text-charcoal-400">
-                  {product.stock > 0 ? `${product.stock} шт. в наличии` : t('product.out_of_stock')}
+                  {product.stock > 0 ? `${product.stock} ${t('common.pieces')} — ${t('product.in_stock')}` : t('product.out_of_stock')}
                 </span>
               </div>
             </div>
@@ -277,15 +278,15 @@ export default function ProductDetail() {
                 }`}
               >
                 <ShoppingBag size={20} />
-                {added ? '✓ Добавлено!' : t('product.add_to_cart')}
+                {added ? L('✓ Добавлено!', "✓ Qo'shildi!", '✓ Added!') : t('product.add_to_cart')}
               </motion.button>
             </div>
 
             {/* Meta */}
             <div className="text-xs text-charcoal-400 space-y-1.5 border-t border-charcoal-100 pt-5">
-              {product.sku && <p>Артикул: {product.sku}</p>}
-              <p>Материал: {t(`filters.materials.${product.material}`) || product.material}</p>
-              <p>Категория: {t(`filters.categories.${product.category}`) || product.category}</p>
+              {product.sku && <p>{L('Артикул', 'Artikul', 'SKU')}: {product.sku}</p>}
+              <p>{t('product.material')}: {t(`filters.materials.${product.material}`) || product.material}</p>
+              <p>{t('filters.category')}: {t(`filters.categories.${product.category}`) || product.category}</p>
             </div>
           </motion.div>
         </div>
@@ -316,7 +317,7 @@ export default function ProductDetail() {
               <p className="text-charcoal-600 leading-relaxed text-base">{description}</p>
               {product.sizes?.length > 0 && (
                 <div className="mt-6">
-                  <h4 className="font-medium text-charcoal-800 mb-3">Размеры</h4>
+                  <h4 className="font-medium text-charcoal-800 mb-3">{L('Размеры', "O'lchamlar", 'Sizes')}</h4>
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((s) => (
                       <span key={s.label} className="px-4 py-2 bg-pink-50 border border-pink-100 rounded-full text-sm text-charcoal-700">
@@ -372,13 +373,13 @@ export default function ProductDetail() {
                   <textarea
                     value={review.comment}
                     onChange={(e) => setReview((r) => ({ ...r, comment: e.target.value }))}
-                    placeholder="Поделитесь своим мнением о товаре..."
+                    placeholder={L('Поделитесь своим мнением о товаре...', 'Mahsulot haqida fikringizni bildiring...', 'Share your thoughts about this product...')}
                     className="input-field resize-none mb-3"
                     rows={4}
                     required
                   />
                   <button type="submit" disabled={submittingReview} className="btn-primary text-sm">
-                    {submittingReview ? 'Отправка...' : 'Отправить отзыв'}
+                    {submittingReview ? L('Отправка...', 'Yuborilmoqda...', 'Sending...') : L('Отправить отзыв', 'Sharh yuborish', 'Submit review')}
                   </button>
                 </form>
               )}

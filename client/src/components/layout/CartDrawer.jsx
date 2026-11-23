@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { cartItemName } from '../../utils/localize.js';
 import { X, ShoppingBag, Trash2, Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useCartStore from '../../store/cartStore.js';
@@ -81,7 +82,7 @@ export default function CartDrawer() {
                         <Link to={`/products/${item.slug}`} onClick={closeCart}>
                           <img
                             src={item.image || PLACEHOLDER_IMAGE}
-                            alt={item.name}
+                            alt={cartItemName(item)}
                             className="w-20 h-20 object-cover rounded-xl"
                             onError={handleImageError}
                           />
@@ -92,7 +93,7 @@ export default function CartDrawer() {
                             onClick={closeCart}
                             className="font-medium text-sm text-charcoal-800 hover:text-pink-500 line-clamp-2 transition-colors"
                           >
-                            {item.name}
+                            {cartItemName(item)}
                           </Link>
                           {item.color && (
                             <div className="flex items-center gap-1 mt-1">

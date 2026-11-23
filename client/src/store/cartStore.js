@@ -30,6 +30,7 @@ const useCartStore = create(
                 key,
                 product: product._id,
                 name: product.name?.ru || product.name,
+                names: typeof product.name === 'object' ? product.name : undefined,
                 image: product.images?.[0],
                 slug: product.slug,
                 retailPrice: product.retailPrice,

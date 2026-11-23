@@ -1,9 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { localText } from '../../utils/localize.js';
 import { X, ShoppingBag, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import useCartStore from '../../store/cartStore.js';
-import useLanguageStore from '../../store/languageStore.js';
+import useLanguageStore, { L } from '../../store/languageStore.js';
 import { PLACEHOLDER_IMAGE, handleImageError } from '../../utils/image.js';
 
 const formatPrice = (n) => new Intl.NumberFormat('uz-UZ').format(n);
@@ -16,8 +17,8 @@ export default function QuickViewModal({ product, onClose }) {
 
   if (!product) return null;
 
-  const name = product.name?.[lang] || product.name?.ru || product.name;
-  const description = product.description?.[lang] || product.description?.ru || '';
+  const name = localText(product.name, lang);
+  const description = localText(product.description, lang);
 
   const handleAddToCart = () => {
     addItem(product, {
@@ -134,7 +135,7 @@ export default function QuickViewModal({ product, onClose }) {
                   className="flex items-center justify-center gap-2 text-sm text-charcoal-500 hover:text-pink-500 transition-colors"
                 >
                   <ExternalLink size={14} />
-                  Подробнее о товаре
+                  {L('Подробнее о товаре', 'Mahsulot haqida batafsil', 'View full details')}
                 </Link>
               </div>
             </div>

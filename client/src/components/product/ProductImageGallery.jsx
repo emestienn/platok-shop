@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { L } from '../../store/languageStore.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZoomIn, ChevronLeft, ChevronRight, X, Package } from 'lucide-react';
 import { handleImageError } from '../../utils/image.js';
@@ -41,7 +42,7 @@ export default function ProductImageGallery({ images = [], productName = '' }) {
             <motion.img
               key={active}
               src={images[active]}
-              alt={`${productName} — фото ${active + 1}`}
+              alt={`${productName} — ${L('фото', 'rasm', 'photo')} ${active + 1}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

@@ -5,7 +5,7 @@ import {
   Package, ShoppingBag, ChevronDown, Clock, CheckCircle, XCircle,
   Settings2, Truck, BadgeCheck, RotateCcw, Store, MapPin, CreditCard,
 } from 'lucide-react';
-import useLanguageStore from '../store/languageStore.js';
+import useLanguageStore, { L } from '../store/languageStore.js';
 import { ordersApi } from '../api/index.js';
 import { PLACEHOLDER_IMAGE, handleImageError } from '../utils/image.js';
 
@@ -186,7 +186,7 @@ export default function Orders() {
                               ) : (
                                 <p className="text-charcoal-700">
                                   {order.shippingAddress?.district}, {order.shippingAddress?.street}
-                                  {order.shippingAddress?.apartment ? `, кв.${order.shippingAddress.apartment}` : ''}
+                                  {order.shippingAddress?.apartment ? `, ${L('кв.', 'xon.', 'apt.')} ${order.shippingAddress.apartment}` : ''}
                                 </p>
                               )}
                             </div>

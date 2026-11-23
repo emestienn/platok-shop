@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import ProductCard from '../components/product/ProductCard.jsx';
 import ProductFilters from '../components/product/ProductFilters.jsx';
 import QuickViewModal from '../components/product/QuickViewModal.jsx';
-import useLanguageStore from '../store/languageStore.js';
+import useLanguageStore, { L } from '../store/languageStore.js';
 import { productsApi } from '../api/index.js';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -75,14 +75,14 @@ export default function Products() {
   const setPage = (p) => updateFilters({ ...filters, page: p });
 
   const titleMap = {
-    hijab:  'Хиджабы',
-    platok: 'Платки',
-    shawl:  'Шали',
-    scarf:  'Шарфы',
+    hijab:  t('categories.hijab.label'),
+    platok: t('categories.platok.label'),
+    shawl:  t('categories.shawl.label'),
+    scarf:  t('categories.scarf.label'),
   };
 
   const pageTitle = filters.search
-    ? `Поиск: "${filters.search}"`
+    ? `${L('Поиск', 'Qidiruv', 'Search')}: "${filters.search}"`
     : filters.category
     ? titleMap[filters.category] || t('nav.catalog')
     : filters.bestSeller === 'true'
@@ -98,7 +98,7 @@ export default function Products() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <h1 className="font-serif text-3xl md:text-4xl text-charcoal-800">{pageTitle}</h1>
           {total > 0 && (
-            <p className="text-charcoal-400 text-sm mt-2">{total} товаров</p>
+            <p className="text-charcoal-400 text-sm mt-2">{total} {L('товаров', 'ta mahsulot', 'products')}</p>
           )}
         </div>
       </div>
@@ -132,8 +132,8 @@ export default function Products() {
             ) : products.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-5xl mb-4">🔍</p>
-                <h3 className="font-serif text-2xl text-charcoal-700 mb-2">Товары не найдены</h3>
-                <p className="text-charcoal-400 mb-6">Попробуйте изменить фильтры или поисковый запрос</p>
+                <h3 className="font-serif text-2xl text-charcoal-700 mb-2">{L('Товары не найдены', 'Mahsulotlar topilmadi', 'No products found')}</h3>
+                <p className="text-charcoal-400 mb-6">{L('Попробуйте изменить фильтры или поисковый запрос', "Filtrlar yoki qidiruv so'rovini o'zgartirib ko'ring", 'Try changing the filters or search query')}</p>
                 <button onClick={clearFilters} className="btn-outline">
                   {t('filters.clear')}
                 </button>

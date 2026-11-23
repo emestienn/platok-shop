@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { localText } from '../utils/localize.js';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -10,6 +11,7 @@ import {
   CreditCard, AlertCircle, Upload, X, Image, Palette, Ruler, Menu, Gem, MapPin,
 } from 'lucide-react';
 import useAuthStore from '../store/authStore.js';
+import useLanguageStore, { L } from '../store/languageStore.js';
 import { adminApi, uploadApi } from '../api/index.js';
 import { handleImageError } from '../utils/image.js';
 
@@ -41,8 +43,8 @@ const AT = {
       cols: ['Товар', 'Категория', 'Материал', 'Цена', 'Склад', 'Флаги', ''],
       loading: 'Загрузка...', units: 'шт.',
       modal_edit: 'Редактировать товар', modal_new: 'Новый товар',
-      name_ru: 'Название (RU) *', name_uz: 'Название (UZ)',
-      slug: 'Slug — авто если пусто', desc_ru: 'Описание (RU)', desc_uz: 'Описание (UZ)',
+      name_ru: 'Название (RU) *', name_uz: 'Название (UZ)', name_en: 'Название (EN)',
+      slug: 'Slug — авто если пусто', desc_ru: 'Описание (RU)', desc_uz: 'Описание (UZ)', desc_en: 'Описание (EN)',
       category: 'Категория', material: 'Материал', pattern: 'Узор',
       price: 'Цена (UZS) *', compare_price: 'Старая цена (для скидки)', stock: 'Остаток (шт.) *',
       cancel: 'Отмена', save: 'Сохранить', saving: 'Сохранение...',
@@ -105,8 +107,8 @@ const AT = {
       cols: ['Mahsulot', 'Kategoriya', 'Material', 'Narx', 'Ombor', 'Belgilar', ''],
       loading: 'Yuklanmoqda...', units: 'ta',
       modal_edit: 'Mahsulotni tahrirlash', modal_new: 'Yangi mahsulot',
-      name_ru: 'Nomi (RU) *', name_uz: 'Nomi (UZ)',
-      slug: 'Slug — bo\'sh bo\'lsa avtomatik', desc_ru: 'Tavsif (RU)', desc_uz: 'Tavsif (UZ)',
+      name_ru: 'Nomi (RU) *', name_uz: 'Nomi (UZ)', name_en: 'Nomi (EN)',
+      slug: 'Slug — bo\'sh bo\'lsa avtomatik', desc_ru: 'Tavsif (RU)', desc_uz: 'Tavsif (UZ)', desc_en: 'Tavsif (EN)',
       category: 'Kategoriya', material: 'Material', pattern: 'Naqsh',
       price: 'Narx (UZS) *', compare_price: 'Eski narx (chegirma uchun)', stock: 'Qoldiq (ta) *',
       cancel: 'Bekor qilish', save: 'Saqlash', saving: 'Saqlanmoqda...',
@@ -141,6 +143,70 @@ const AT = {
       loading: 'Yuklanmoqda...', all: 'Hammasi',
       approve: 'Ulgurjini tasdiqlash', deactivate_confirm: 'Foydalanuvchini faolsizlantirish?',
       linked: 'Bog\'langan', guest: 'Mehmon',
+    },
+  },
+  en: {
+    nav: { dashboard: 'Dashboard', orders: 'Orders', products: 'Products', users: 'Customers' },
+    sidebar: { view_site: 'View site', logout: 'Sign out', role: 'Administrator' },
+    dashboard: {
+      total_orders: 'Total orders', pending: 'Pending', needs_processing: 'Needs processing',
+      revenue: 'Revenue', customers: 'Customers', recent_orders: 'Recent orders',
+      cols: ['Order', 'Customer', 'Amount', 'Status', 'Date'],
+    },
+    orders: {
+      title: 'Order management', all: 'All',
+      loading: 'Loading orders...', empty: 'No orders',
+      cols: ['', 'Order', 'Customer', 'Items', 'Amount', 'Delivery', 'Status'],
+      delivery: 'Delivery', pickup: 'Pickup',
+      expand: { address: 'Address', payment: 'Payment', composition: 'Items', notes: 'Notes', view_map: 'View on map', location: 'Location' },
+      paid: 'Paid', not_paid: 'Not paid',
+      units: 'pcs',
+    },
+    status: {
+      pending: 'Pending', confirmed: 'Confirmed', processing: 'Processing',
+      shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled', refunded: 'Refunded',
+    },
+    products: {
+      title: 'Products', search: 'Search...', add: 'Add product',
+      cols: ['Product', 'Category', 'Material', 'Price', 'Stock', 'Flags', ''],
+      loading: 'Loading...', units: 'pcs',
+      modal_edit: 'Edit product', modal_new: 'New product',
+      name_ru: 'Name (RU) *', name_uz: 'Name (UZ)', name_en: 'Name (EN)',
+      slug: 'Slug — auto if empty', desc_ru: 'Description (RU)', desc_uz: 'Description (UZ)', desc_en: 'Description (EN)',
+      category: 'Category', material: 'Material', pattern: 'Pattern',
+      price: 'Price (UZS) *', compare_price: 'Old price (for discount)', stock: 'Stock (pcs) *',
+      cancel: 'Cancel', save: 'Save', saving: 'Saving...',
+      delete_confirm: 'Delete this product?', error_save: 'Could not save',
+      flags: { featured: 'Featured', bestseller: 'Best seller', new: 'New' },
+      badges_section: 'Product badges',
+      badge_options: {
+        premium: 'Premium quality', breathable: 'Breathable fabric', limited: 'Limited edition',
+        new: 'New', sale: 'Sale', exclusive: 'Exclusive',
+      },
+      wholesale_section: 'Wholesale prices',
+      wholesale_add: 'Add tier',
+      wholesale_min: 'From (pcs) *', wholesale_max: 'To (pcs)', wholesale_price: 'Price per piece (UZS) *',
+      wholesale_label_ph: 'e.g. 10-29 pcs',
+      images_section: 'Product images',
+      img_upload: 'Upload file',
+      img_url: 'Paste URL',
+      img_url_ph: 'https://example.com/image.jpg',
+      img_url_add: 'Add',
+      img_url_invalid: 'The link must be a full address starting with https://',
+      colors_section: 'Color options',
+      color_add: 'Add color',
+      color_name_ph: 'Color name (e.g. White)',
+      color_img_ph: 'Image URL for this color',
+      sizes_section: 'Sizes',
+      size_add: 'Add',
+      size_ph: 'e.g. S, M, L or 90×90',
+      uploading: 'Uploading files...',
+    },
+    users: {
+      title: 'Customers', cols: ['Customer', 'Email', 'Phone', 'Role', 'Telegram', 'Joined', ''],
+      loading: 'Loading...', all: 'All',
+      approve: 'Approve wholesale', deactivate_confirm: 'Deactivate this user?',
+      linked: 'Linked', guest: 'Guest',
     },
   },
 };
@@ -179,10 +245,11 @@ const useLang = () => {
 // ── Language toggle button ────────────────────────────────────────────────────
 const LangToggle = ({ lang, setLang }) => (
   <button
-    onClick={() => setLang(l => l === 'ru' ? 'uz' : 'ru')}
+    onClick={() => setLang(l => (l === 'ru' ? 'uz' : l === 'uz' ? 'en' : 'ru'))}
     className="text-[11px] font-semibold px-2.5 py-1 rounded-full border border-pink-200 text-pink-500 hover:bg-pink-50 transition-all tracking-wide"
+    title="RU / UZ / EN"
   >
-    {lang === 'ru' ? 'UZ' : 'RU'}
+    {lang === 'ru' ? 'UZ' : lang === 'uz' ? 'EN' : 'RU'}
   </button>
 );
 
@@ -516,7 +583,7 @@ const OrdersTab = () => {
                                     <Store size={13} className="text-gold-500" /> {at('orders.pickup')}: {order.pickupLocation}
                                   </p>
                                 ) : (
-                                  <p className="text-charcoal-700">{order.shippingAddress?.district}, {order.shippingAddress?.street}{order.shippingAddress?.apartment ? `, кв.${order.shippingAddress.apartment}` : ''}</p>
+                                  <p className="text-charcoal-700">{order.shippingAddress?.district}, {order.shippingAddress?.street}{order.shippingAddress?.apartment ? `, ${L('кв.', 'xon.', 'apt.')} ${order.shippingAddress.apartment}` : ''}</p>
                                 )}
                                 {/* Location: GPS link or manual address text */}
                                 {order.location?.mapLink ? (
@@ -589,7 +656,7 @@ const isValidHttpsUrl = (url) => /^https:\/\/.+/i.test(url.trim());
 const BADGE_OPTIONS = ['premium', 'breathable', 'limited', 'new', 'sale', 'exclusive'];
 
 const EMPTY_PRODUCT = {
-  nameRu: '', nameUz: '', descRu: '', descUz: '', slug: '',
+  nameRu: '', nameUz: '', nameEn: '', descRu: '', descUz: '', descEn: '', slug: '',
   category: 'platok', material: 'silk', pattern: 'solid',
   retailPrice: '', compareAtPrice: '', stock: '',
   isFeatured: false, isBestSeller: false, isNewArrival: false,
@@ -602,6 +669,7 @@ const EMPTY_PRODUCT = {
 };
 
 const ProductsTab = () => {
+  const lang = useContext(LangCtx);
   const at = useLang();
   const [products, setProducts] = useState([]);
   const [loading, setLoading]   = useState(true);
@@ -694,8 +762,8 @@ const ProductsTab = () => {
   const openCreate = () => { setForm(EMPTY_PRODUCT); setModal('create'); };
   const openEdit   = (p) => {
     setForm({
-      nameRu: p.name?.ru || '', nameUz: p.name?.uz || '',
-      descRu: p.description?.ru || '', descUz: p.description?.uz || '',
+      nameRu: p.name?.ru || '', nameUz: p.name?.uz || '', nameEn: p.name?.en || '',
+      descRu: p.description?.ru || '', descUz: p.description?.uz || '', descEn: p.description?.en || '',
       slug: p.slug || '', category: p.category, material: p.material,
       pattern: p.pattern || 'solid', retailPrice: p.retailPrice,
       compareAtPrice: p.compareAtPrice || '', stock: p.stock,
@@ -761,8 +829,8 @@ const ProductsTab = () => {
         }));
 
       const payload = {
-        name:        { ru: form.nameRu, uz: form.nameUz },
-        description: { ru: form.descRu, uz: form.descUz },
+        name:        { ru: form.nameRu, uz: form.nameUz, en: form.nameEn },
+        description: { ru: form.descRu, uz: form.descUz, en: form.descEn },
         slug: slugValue, category: form.category, material: form.material, pattern: form.pattern,
         retailPrice: Number(form.retailPrice),
         compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : null,
@@ -834,7 +902,7 @@ const ProductsTab = () => {
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="font-medium text-charcoal-800 line-clamp-1">{p.name?.ru}</p>
+                          <p className="font-medium text-charcoal-800 line-clamp-1">{localText(p.name, lang)}</p>
                           <p className="text-[11px] text-charcoal-400">{p.slug}</p>
                         </div>
                       </div>
@@ -901,6 +969,10 @@ const ProductsTab = () => {
                   </div>
                 </div>
                 <div>
+                  <label className="block text-xs font-medium text-charcoal-600 mb-1">{at('products.name_en')}</label>
+                  <input value={form.nameEn} onChange={e => F('nameEn', e.target.value)} className="input-field text-sm" />
+                </div>
+                <div>
                   <label className="block text-xs font-medium text-charcoal-600 mb-1">{at('products.slug')}</label>
                   <input value={form.slug} onChange={e => F('slug', e.target.value)} className="input-field text-sm" placeholder="nazvanie-tovara" />
                 </div>
@@ -913,6 +985,10 @@ const ProductsTab = () => {
                     <label className="block text-xs font-medium text-charcoal-600 mb-1">{at('products.desc_uz')}</label>
                     <textarea value={form.descUz} onChange={e => F('descUz', e.target.value)} className="input-field text-sm resize-none" rows={3} />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-charcoal-600 mb-1">{at('products.desc_en')}</label>
+                  <textarea value={form.descEn} onChange={e => F('descEn', e.target.value)} className="input-field text-sm resize-none" rows={3} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
@@ -1282,7 +1358,8 @@ const UsersTab = () => {
 // ── Root ──────────────────────────────────────────────────────────────────────
 export default function Admin() {
   const [tab, setTab]           = useState('dashboard');
-  const [lang, setLang]         = useState('ru');
+  const [lang, setLang]         = useState(() => useLanguageStore.getState().lang || 'ru');
+  useEffect(() => { useLanguageStore.getState().setLang(lang); }, [lang]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, logout, token } = useAuthStore();
   const navigate                = useNavigate();

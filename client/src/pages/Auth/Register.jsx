@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 import useAuthStore from '../../store/authStore.js';
-import useLanguageStore from '../../store/languageStore.js';
+import useLanguageStore, { L } from '../../store/languageStore.js';
 
 export default function Register() {
   const [form, setForm]         = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
@@ -22,11 +22,11 @@ export default function Register() {
     setFormError('');
 
     if (form.password !== form.confirmPassword) {
-      setFormError('Пароли не совпадают');
+      setFormError(L('Пароли не совпадают', 'Parollar mos kelmadi', 'Passwords do not match'));
       return;
     }
     if (form.password.length < 6) {
-      setFormError('Пароль должен быть не менее 6 символов');
+      setFormError(L('Пароль должен быть не менее 6 символов', "Parol kamida 6 ta belgidan iborat bo'lishi kerak", 'Password must be at least 6 characters'));
       return;
     }
 
@@ -65,7 +65,7 @@ export default function Register() {
                 value={form.name}
                 onChange={(e) => update('name', e.target.value)}
                 className="input-field"
-                placeholder="Ваше имя"
+                placeholder={L('Ваше имя', 'Ismingiz', 'Your name')}
                 required
               />
             </div>
@@ -101,7 +101,7 @@ export default function Register() {
                   value={form.password}
                   onChange={(e) => update('password', e.target.value)}
                   className="input-field pr-11"
-                  placeholder="Минимум 6 символов"
+                  placeholder={L('Минимум 6 символов', 'Kamida 6 ta belgi', 'At least 6 characters')}
                   required
                 />
                 <button
@@ -121,13 +121,13 @@ export default function Register() {
                 value={form.confirmPassword}
                 onChange={(e) => update('confirmPassword', e.target.value)}
                 className="input-field"
-                placeholder="Повторите пароль"
+                placeholder={L('Повторите пароль', 'Parolni takrorlang', 'Repeat password')}
                 required
               />
             </div>
 
             <button type="submit" disabled={isLoading} className="btn-primary w-full text-base py-3.5">
-              {isLoading ? 'Создаём аккаунт...' : t('auth.register')}
+              {isLoading ? L('Создаём аккаунт...', 'Hisob yaratilmoqda...', 'Creating account...') : t('auth.register')}
             </button>
           </form>
 
@@ -142,7 +142,7 @@ export default function Register() {
         {/* Wholesale CTA */}
         <div className="mt-4 text-center">
           <p className="text-sm text-charcoal-500">
-            Вы бизнес?{' '}
+            {L('Вы бизнес?', 'Biznesmisiz?', 'Are you a business?')}{' '}
             <Link to="/register" className="text-gold-500 hover:text-gold-600 font-medium">
               {t('auth.wholesale_apply')} →
             </Link>

@@ -5,7 +5,7 @@ import InstagramFeed from '../components/home/InstagramFeed.jsx';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Sparkles, Truck, Building2, ShieldCheck, Layers, Wind, Feather, Tag } from 'lucide-react';
-import useLanguageStore from '../store/languageStore.js';
+import useLanguageStore, { L } from '../store/languageStore.js';
 
 const CATEGORY_ICONS = {
   hijab:  <Layers  size={32} strokeWidth={1.5} />,
@@ -55,7 +55,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="font-serif text-2xl md:text-3xl text-charcoal-800">
-              {lang === 'uz' ? 'Kategoriyalar' : 'Категории'}
+              {L('Категории', 'Kategoriyalar', 'Categories')}
             </h2>
             <div className="gold-divider" />
           </div>

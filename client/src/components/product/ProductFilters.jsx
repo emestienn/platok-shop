@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, X, SlidersHorizontal } from 'lucide-react';
-import useLanguageStore from '../../store/languageStore.js';
+import useLanguageStore, { L } from '../../store/languageStore.js';
 
 const FilterSection = ({ title, children, defaultOpen = true }) => {
   const [open, setOpen] = useState(defaultOpen);
@@ -115,20 +115,20 @@ export default function ProductFilters({ filters, onChange, onClear }) {
           <div className="flex gap-2">
             <input
               type="number"
-              placeholder="От"
+              placeholder={L('От', 'Dan', 'From')}
               value={filters.minPrice || ''}
               onChange={(e) => onChange({ ...filters, minPrice: e.target.value })}
               className="input-field text-sm py-2"
             />
             <input
               type="number"
-              placeholder="До"
+              placeholder={L('До', 'Gacha', 'To')}
               value={filters.maxPrice || ''}
               onChange={(e) => onChange({ ...filters, maxPrice: e.target.value })}
               className="input-field text-sm py-2"
             />
           </div>
-          <p className="text-xs text-charcoal-400">В сумах (UZS)</p>
+          <p className="text-xs text-charcoal-400">{L('В сумах (UZS)', "So'mda (UZS)", 'In UZS')}</p>
         </div>
       </FilterSection>
     </div>
@@ -178,7 +178,7 @@ export default function ProductFilters({ filters, onChange, onClear }) {
                 </button>
                 <FilterContent />
                 <button onClick={() => setMobileOpen(false)} className="btn-primary w-full mt-4">
-                  Применить
+                  {L('Применить', "Qo'llash", 'Apply')}
                 </button>
               </motion.div>
             </>

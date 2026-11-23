@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 import useAuthStore from '../../store/authStore.js';
-import useLanguageStore from '../../store/languageStore.js';
+import useLanguageStore, { L } from '../../store/languageStore.js';
 
 export default function Login() {
   const [email, setEmail]       = useState('');
@@ -93,7 +93,7 @@ export default function Login() {
               disabled={isLoading}
               className="btn-primary w-full text-base py-3.5"
             >
-              {isLoading ? 'Входим...' : t('auth.login')}
+              {isLoading ? L('Входим...', 'Kirilmoqda...', 'Signing in...') : t('auth.login')}
             </button>
           </form>
 

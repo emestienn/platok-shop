@@ -9,7 +9,9 @@
     "install:all": "npm install && cd server && npm install && cd ../client && npm install",
     "seed": "cd server && npm run seed",
     "build": "cd client && npm install --include=dev && npm run build",
-    "start": "cd server && npm install && node server.js"
+    "start": "cd server && npm install && node server.js",
+    "render-build": "npm run build && cd server && npm install && node utils/addProducts.js",
+    "add-products": "cd server && node utils/addProducts.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
